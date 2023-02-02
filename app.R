@@ -3,7 +3,6 @@ library(tidyr)
 library(caret)
 library(ggplot2)
 library(dplyr)
-
 library(pROC)
 library(shinydashboard)
 options(warn=-1)#stop the pesky warnings of caret while training the model
@@ -27,79 +26,110 @@ stroke_data <- stroke_data[sample(1:nrow(stroke_data)),]
 
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Controls"),
+  dashboardHeader(title = "Stroke Prediction"),
   
   dashboardSidebar(
-    sidebarMenuOutput("menu"),
-    sliderInput("Age",
-                "Select Age:",
-                min = 0,
-                max = 120,
-                value = 20),
-    sliderInput("BMI",
-                "Select BMI:",
-                min = 0,
-                max = 60,
-                value = 20),
-    
-    sliderInput("Avg_glucose",
-                "Average Glucose Levels:",
-                min = 30,
-                max = 300,
-                value = 100),
-    
-    sliderInput("mix",
-                "Training Data Proportion (How Much the Model Knows)",
-                min = 0.01,
-                max = 0.99,
-                value = .6),
-    
-    selectInput("Gender", label = h3("Select Gender"), 
-                choices = c("Female" = "Female", "Male" = "Male", "Other" = "Other")
-    ),
-    
-    selectInput("Hypertension", label = h3("Hypertension?"), 
-                choices = c("Yes" = "1","No"="0"),selected = "0" #selected argument needs to match what the selection actually represents 
-                #i.e. the data is in 0 or 1 so we "select" the 0 not what the choice in the input that represents that selection.
-    ),
-    
-    selectInput("Heart", label = h3("Heart Disease?"), 
-                choices = c("Yes" = "1","No"="0"),selected = "0"
-    ),
-    selectInput("Ever_Married", label = h3("Marriage Status"), 
-                choices = c("Yes" = "Yes","No"="No"),selected = "No"
-    ),
-    selectInput("Work_Type", label = h3("Work Type"), 
-                choices = c("Self Employed" = "Self_employed",
-                            "Children" = "children",
-                            "Government" = "Govt_job",
-                            "Never Worked" = "Never_worked",
-                            "Private" = "Private"),
-                selected = "Self Employed"
-    ),
-    selectInput("Residence_Type", label = h3("Residence Type"), 
-                choices = c("Rural (Country)" = "Rural",
-                            "Urban (City)" = "Urban"
-                ),
-                selected = "Rural (Country)"
-    ),
-    
-    selectInput("Smoke", label = h3("Smoking Status"), 
-                choices = c("Never Smoked" = "never_smoked",
-                            "Formerly Smoked" = "formerly_smoked",
-                            "Smokes" = "smokes",
-                            "Unknown (Really Now?)" = "Unknown"
-                ),
-                selected = "Never Smoked"
-    )),
+      sidebarMenu(id = "sidebar",
+        menuItem("Controls", tabName = "home" ,icon = icon("suitcase-medical"),
+                 badgeLabel = "new", badgeColor = "green"),
+        
+        menuItem("Specifics", icon=icon("microscope"),tabName = "specifi",
+                 badgeLabel = "new", badgeColor = "green"),
+        
+        menuItem("Holdout Proportion", icon=icon("bar-chart"),tabName = "prop",
+                 badgeLabel = "new", badgeColor = "green"),
+        
+        menuItem("Source code", icon = icon("github"), 
+                 href = "https://github.com/AlexanderHolmes0/Stroke_Dash",
+                 badgeLabel = "new", badgeColor = "green"),
+        
+        conditionalPanel(
+          condition = "input.sidebar == 'prop'",
+          sliderInput("mix",
+                      h4("Training Data Proportion (How Much the Model Knows)"),
+                      min = 0.01,
+                      max = 0.99,
+                      value = .6)),
+        
+        conditionalPanel('input.sidebar == "home"',
+          sliderInput("Age",
+                      h4("Select Age:"),
+                      min = 0,
+                      max = 120,
+                      value = 20),
+          sliderInput("BMI",
+                      h4("Select BMI:"),
+                      min = 0,
+                      max = 60,
+                      value = 20),
+          
+          
+          selectInput("Gender", label = h4("Select Gender"), 
+                      choices = c("Female" = "Female", "Male" = "Male", "Other" = "Other")
+          ),
+          
+          selectInput("Hypertension", label = h4("Hypertension?"), 
+                      choices = c("Yes" = "1","No"="0"),selected = "0" #selected argument needs to match what the selection actually represents 
+                      #i.e. the data is in 0 or 1 so we "select" the 0 not what the choice in the input that represents that selection.
+          ),
+          
+          selectInput("Heart", label = h4("Heart Disease?"), 
+                      choices = c("Yes" = "1","No"="0"),selected = "0"
+          ),
+         
+          
+          selectInput("Smoke", label = h4("Smoking Status"), 
+                      choices = c("Never Smoked" = "never_smoked",
+                                  "Formerly Smoked" = "formerly_smoked",
+                                  "Smokes" = "smokes",
+                                  "Unknown (Really Now?)" = "Unknown"
+                      ),
+                      selected = "Never Smoked"
+          )
+        ),
+        conditionalPanel(
+          "input.sidebar == 'specifi'",
+          sliderInput(
+            "Avg_glucose",
+            h4("Average Glucose Levels:"),
+            min = 30,
+            max = 300,
+            value = 100
+          ),
+          selectInput(
+            "Ever_Married",
+            label = h4("Married"),
+            choices = c("Yes" = "Yes", "No" = "No"),
+            selected = "No"
+          ),
+          selectInput(
+            "Work_Type",
+            label = h4("Work Type"),
+            choices = c(
+              "Self Employed" = "Self_employed",
+              "Children" = "children",
+              "Government" = "Govt_job",
+              "Never Worked" = "Never_worked",
+              "Private" = "Private"
+            ),
+            selected = "Self Employed"
+          ),
+          selectInput("Residence_Type", label = h4("Residence Type"), 
+                      choices = c("Rural (Country)" = "Rural",
+                                  "Urban (City)" = "Urban"
+                      ),
+                      selected = "Rural (Country)"
+          )
+        )
+        
+      )), 
    
   
   
   dashboardBody(
+    tags$head(tags$link(rel = "shortcut icon", href = "favicon.ico")),
     fluidRow(
       tabBox(
-        title = "First tabBox YAY!",
-
         id = "tabset1", height = "1000px",width="1000px",
         tabPanel("Probability",valueBoxOutput("StrokeProb")),
         tabPanel("Holdout Preds", verbatimTextOutput("Label1"),
@@ -116,15 +146,7 @@ ui <- dashboardPage(
 
 
 server <- function(input, output) {
-  output$menu <- renderMenu({
-    sidebarMenu(
-      menuItem("Menu item", icon = icon("calendar"))
-    )
-  })
-  
- 
-    
-    
+
     #store objects that need to change in reactive() objects, acce$$ed later...
     train.rows <- reactive({
       sample(1:nrow(stroke_data), input$mix * nrow(stroke_data))
