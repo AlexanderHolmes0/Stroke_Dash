@@ -5,10 +5,10 @@ account: aholmes23
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8187568
-bundleId: 6800639
+bundleId: 6819788
 url: https://aholmes23.shinyapps.io/Stroke_Dash/
-when: 1675309004.70023
-lastSyncTime: 1675309004.70025
+when: 1675783459.1749
+lastSyncTime: 1675783459.17493
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RData|README.md
+ignoredFiles: README.md

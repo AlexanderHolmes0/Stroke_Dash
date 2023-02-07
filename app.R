@@ -30,7 +30,7 @@ ui <- dashboardPage(
   
   dashboardSidebar(
       sidebarMenu(id = "sidebar",
-        menuItem("Controls", tabName = "home" ,icon = icon("suitcase-medical"),
+        menuItem("Health Information", tabName = "home" ,icon = icon("suitcase-medical"),
                  badgeLabel = "new", badgeColor = "green"),
         
         menuItem("Specifics", icon=icon("microscope"),tabName = "specifi",
