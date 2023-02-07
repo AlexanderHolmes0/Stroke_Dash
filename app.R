@@ -127,7 +127,9 @@ ui <- dashboardPage(
   
   
   dashboardBody(
+    
     tags$head(tags$link(rel = "shortcut icon", href = "favicon.ico")),
+    
     fluidRow(
       tabBox(
         id = "tabset1", height = "1000px",width="1000px",
