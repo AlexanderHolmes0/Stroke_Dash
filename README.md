@@ -9,3 +9,5 @@ training and holdout proportions and various other graphs to investigate predict
 Play around with it and try to break it :).
 
 Report any issues you find. 
+
+![](https://github.com/AlexanderHolmes0/Stroke_Dash/blob/main/dataset-cover.jpg)
